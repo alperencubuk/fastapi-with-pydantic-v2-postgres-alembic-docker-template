@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "b162706d-61bc-42d3-8fba-04998cacaca5",
+		"name": "Boilerplate API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6272551"
+	},
+	"item": [
+		{
+			"name": "boilerplate",
+			"item": [
+				{
+					"name": "Boilerplate Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData.id) {\r",
+									"    pm.collectionVariables.set(\"boilerplate_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user@boilerplate.com\",\r\n    \"first_name\": \"fname\",\r\n    \"last_name\": \"lname\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/boilerplate",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"boilerplate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boilerplate List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/boilerplate?page=1&size=50&sort=id&order=desc",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"boilerplate"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "page"
+								},
+								{
+									"key": "size",
+									"value": "50",
+									"description": "use 0 for no limit"
+								},
+								{
+									"key": "sort",
+									"value": "id",
+									"description": "id, email, create_date, update_date"
+								},
+								{
+									"key": "order",
+									"value": "desc",
+									"description": "asc, desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boilerplate Get",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"if (jsonData.id) {\r",
+									"    pm.collectionVariables.set(\"boilerplate_id\", jsonData.id);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/boilerplate/{{boilerplate_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"boilerplate",
+								"{{boilerplate_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boilerplate Update",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"firstn\",\r\n    \"last_name\": \"lastn\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/boilerplate/{{boilerplate_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"boilerplate",
+								"{{boilerplate_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boilerplate Delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/boilerplate/{{boilerplate_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"boilerplate",
+								"{{boilerplate_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "apikey",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "boilerplate_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

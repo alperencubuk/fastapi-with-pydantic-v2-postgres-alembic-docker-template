@@ -1,0 +1,12 @@
+alembic==1.11.1
+coverage==7.2.7
+email-validator==2.0.0.post2
+fastapi==0.100.0
+httpx==0.24.1
+pre-commit==3.3.3
+psycopg2-binary==2.9.6
+pydantic-settings==2.0.1
+pytest-asyncio==0.21.0
+sqlalchemy==2.0.18
+sqlalchemy-utils==0.41.1
+uvicorn==0.22.0
