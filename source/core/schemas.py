@@ -1,8 +1,11 @@
 from pydantic import BaseModel
+from pydantic.config import ConfigDict
 
 
 class ResponseSchema(BaseModel):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PageSchema(BaseModel):

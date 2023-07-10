@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field
 
 from source.app.boilerplate.enums import Order, Sort
 from source.core.schemas import PageSchema, ResponseSchema
@@ -22,8 +22,6 @@ class BoilerplateResponse(ResponseSchema):
     last_name: str | None
     create_date: datetime
     update_date: datetime
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class BoilerplateUpdateRequest(BaseModel):
