@@ -1,26 +1,25 @@
 import asyncio
+from typing import Any, AsyncGenerator
 
 import pytest_asyncio
 from httpx import AsyncClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy_utils import create_database, drop_database
 
 from source.core.database import Base, get_db
 from source.core.settings import settings
 from source.main import app
 
-test_db_uri = f"{settings.POSTGRES_URI}_test"
-engine = create_engine(test_db_uri)
-SessionLocal = sessionmaker(bind=engine)
+engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRES_URI}_test")
+SessionLocal = async_sessionmaker(bind=engine)
 
 
-def get_test_db() -> Session:
+async def get_test_db() -> AsyncGenerator[AsyncSession, Any]:
     test_db = SessionLocal()
     try:
         yield test_db
     finally:
-        test_db.close()
+        await test_db.close()
 
 
 app.dependency_overrides[get_db] = get_test_db
@@ -28,8 +27,10 @@ app.dependency_overrides[get_db] = get_test_db
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def create_test_db():
+    test_db_uri = f"postgresql://{settings.POSTGRES_URI}_test"
     create_database(test_db_uri)
-    Base.metadata.create_all(bind=engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
     drop_database(test_db_uri)
 
@@ -53,8 +54,5 @@ def event_loop():
 
 @pytest_asyncio.fixture(scope="session")
 async def db():
-    test_db = SessionLocal()
-    try:
-        yield test_db
-    finally:
-        test_db.close()
+    async for db in get_test_db():
+        yield db

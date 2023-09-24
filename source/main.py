@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from source.core.database import database_health, get_db
 from source.core.routers import api_router
@@ -31,5 +31,5 @@ app.add_middleware(
 
 
 @app.get("/", response_model=HealthSchema, tags=["health"])
-async def health_check(db: Session = Depends(get_db)):
+async def health_check(db: AsyncSession = Depends(get_db)):
     return {"api": True, "database": await database_health(db=db)}

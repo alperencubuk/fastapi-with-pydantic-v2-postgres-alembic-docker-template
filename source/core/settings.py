@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     APP_TITLE: str = "FastAPI (with Pydantic v2) Postgres Alembic Docker Template"
-    VERSION: str = "1.0.0"
+    VERSION: str = "2.0.0"
 
     API_KEY: str = "apikey"
     API_KEY_HEADER: str = "Authorization"
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validator(cls, values: "Settings") -> "Settings":
         values.POSTGRES_URI = (
-            f"postgresql://{values.POSTGRES_USER}:{values.POSTGRES_PASSWORD}@"
+            f"{values.POSTGRES_USER}:{values.POSTGRES_PASSWORD}@"
             f"{values.POSTGRES_HOST}:{values.POSTGRES_PORT}/{values.POSTGRES_DB}"
         )
         return values

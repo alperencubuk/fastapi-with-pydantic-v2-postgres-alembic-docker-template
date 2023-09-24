@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from source.app.boilerplate.schemas import (
     BoilerplateId,
@@ -13,6 +13,7 @@ from source.app.boilerplate.services import (
     create_boilerplate,
     delete_boilerplate,
     get_boilerplate,
+    get_db_boilerplate,
     list_boilerplate,
     update_boilerplate,
 )
@@ -32,7 +33,7 @@ boilerplate_router = APIRouter(prefix="/boilerplate")
     tags=["boilerplate"],
 )
 async def boilerplate_create(
-    boilerplate: BoilerplateRequest, db: Session = Depends(get_db)
+    boilerplate: BoilerplateRequest, db: AsyncSession = Depends(get_db)
 ) -> BoilerplateResponse:
     if created_boilerplate := await create_boilerplate(boilerplate=boilerplate, db=db):
         return created_boilerplate
@@ -50,7 +51,7 @@ async def boilerplate_create(
 )
 async def boilerplate_list(
     pagination: BoilerplatePagination = Depends(),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> BoilerplatePage:
     return await list_boilerplate(
         page=pagination.page,
@@ -72,7 +73,7 @@ async def boilerplate_list(
 )
 async def boilerplate_get(
     request: BoilerplateId = Depends(),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> BoilerplateResponse:
     if boilerplate := await get_boilerplate(
         boilerplate_id=request.boilerplate_id, db=db
@@ -97,11 +98,13 @@ async def boilerplate_get(
 async def boilerplate_update(
     payload: BoilerplateUpdateRequest,
     request: BoilerplateId = Depends(),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> BoilerplateResponse:
-    if await get_boilerplate(boilerplate_id=request.boilerplate_id, db=db):
+    if boilerplate := await get_db_boilerplate(
+        boilerplate_id=request.boilerplate_id, db=db
+    ):
         if updated_boilerplate := await update_boilerplate(
-            boilerplate_id=request.boilerplate_id, boilerplate=payload, db=db
+            boilerplate=boilerplate, boilerplate_update=payload, db=db
         ):
             return updated_boilerplate
         raise HTTPException(
@@ -125,7 +128,7 @@ async def boilerplate_update(
 )
 async def boilerplate_delete(
     request: BoilerplateId = Depends(),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ) -> None:
     if not await delete_boilerplate(boilerplate_id=request.boilerplate_id, db=db):
         raise HTTPException(

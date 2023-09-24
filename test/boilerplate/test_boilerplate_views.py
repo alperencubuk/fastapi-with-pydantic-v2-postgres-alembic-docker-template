@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from httpx import AsyncClient
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from source import BoilerplateModel
 
@@ -24,7 +24,7 @@ async def test_create_boilerplate(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_boilerplate(client: AsyncClient, db: Session):
+async def test_get_boilerplate(client: AsyncClient, db: AsyncSession):
     date = datetime.utcnow()
     payload = {
         "email": "test_get@boilerplate.com",
@@ -35,8 +35,8 @@ async def test_get_boilerplate(client: AsyncClient, db: Session):
     }
     boilerplate = BoilerplateModel(**payload)
     db.add(boilerplate)
-    db.commit()
-    db.refresh(boilerplate)
+    await db.commit()
+    await db.refresh(boilerplate)
     response = await client.get(f"/boilerplate/{boilerplate.id}")
 
     assert response.status_code == 200
