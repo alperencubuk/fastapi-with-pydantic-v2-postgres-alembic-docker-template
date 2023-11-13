@@ -1,5 +1,3 @@
-from functools import lru_cache
-
 from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
@@ -27,7 +25,6 @@ class Settings(BaseSettings):
         return values
 
 
-@lru_cache()
 def get_settings():
     return Settings()
 

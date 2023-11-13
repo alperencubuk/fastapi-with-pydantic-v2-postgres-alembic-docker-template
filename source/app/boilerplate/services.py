@@ -1,4 +1,3 @@
-from asyncio import gather
 from math import ceil
 
 from sqlalchemy import asc, desc, func, select
@@ -29,15 +28,11 @@ async def list_boilerplate(
     page: int, size: int, sort: Sort, order: Order, db: AsyncSession
 ) -> BoilerplatePage:
     order = asc(sort) if order == Order.ASC.value else desc(sort)
-    boilerplates, total = await gather(
-        db.scalars(
-            select(BoilerplateModel)
-            .order_by(order)
-            .offset((page - 1) * size)
-            .limit(size)
-        ),
-        db.scalar(select(func.count(BoilerplateModel.id))),
+    boilerplates = await db.scalars(
+        select(BoilerplateModel).order_by(order).offset((page - 1) * size).limit(size)
     )
+    total = await db.scalar(select(func.count(BoilerplateModel.id)))
+
     boilerplate_list = [
         BoilerplateResponse.model_validate(boilerplate)
         for boilerplate in boilerplates.all()
